@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { PokemonService } from './pokemon.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
-
+import { Query } from '@nestjs/common';
 @Controller('pokemon')
 export class PokemonController {
   constructor(private readonly pokemonService: PokemonService) {}
@@ -13,9 +13,9 @@ export class PokemonController {
   }
 
   @Get()
-  findAll() {
-    return this.pokemonService.findAll();
-  }
+findAll(@Query('name') name?: string, @Query('type') type?: string, @Query('minHp') minHp?: number) {
+  return this.pokemonService.findAll(name, type, minHp);
+ }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

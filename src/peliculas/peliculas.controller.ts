@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { PeliculasService } from './peliculas.service';
 import { CreatePeliculaDto } from './dto/create-pelicula.dto';
+import { Query } from '@nestjs/common';
 
 @Controller('peliculas')
 export class PeliculasController {
@@ -12,9 +13,9 @@ export class PeliculasController {
   }
 
   @Get()
-  findAll() {
-    return this.peliculasService.findAll();
-  }
+findAll(@Query('title') title?: string, @Query('maxYear') maxYear?: number) {
+  return this.peliculasService.findAll(title, maxYear);
+ }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

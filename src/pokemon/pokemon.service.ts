@@ -17,9 +17,24 @@ export class PokemonService {
     return this.pokemonRepository.save(pokemon);
   }
 
-  findAll(): Promise<Pokemon[]> {
-    return this.pokemonRepository.find();
+  async findAll(name?: string, type?: string, minHp?: number): Promise<Pokemon[]> {
+    const query = this.pokemonRepository.createQueryBuilder('pokemon');
+  
+    if (name) {
+      query.andWhere('pokemon.name LIKE :name', { name: `%${name}%` });
+    }
+  
+    if (type) {
+      query.andWhere('pokemon.type = :type', { type });
+    }
+  
+    if (minHp) {
+      query.andWhere('pokemon.hp > :minHp', { minHp });
+    }
+  
+    return query.getMany();
   }
+  
 
   async findOne(id: number): Promise<Pokemon> {
     const pokemon = await this.pokemonRepository.findOne({ where: { id } });

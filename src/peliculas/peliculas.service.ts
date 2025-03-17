@@ -16,9 +16,19 @@ export class PeliculasService {
     return this.peliculaRepository.save(pelicula);
   }
 
-  findAll(): Promise<Pelicula[]> {
-    return this.peliculaRepository.find();
-  }
+  async findAll(title?: string, maxYear?: number): Promise<Pelicula[]> {
+    const query = this.peliculaRepository.createQueryBuilder('pelicula');
+  
+    if (title) {
+      query.andWhere('pelicula.title LIKE :title', { title: `%${title}%` });
+    }
+  
+    if (maxYear) {
+      query.andWhere('pelicula.year < :maxYear', { maxYear });
+    }
+  
+    return query.getMany();
+  }  
 
   async findOne(id: number): Promise<Pelicula> {
     const pelicula = await this.peliculaRepository.findOne({ where: { id } });
